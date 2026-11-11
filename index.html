@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#10131a">
+  <meta name="description" content="Інтерактивний посібник і калькулятор Квадрата Декарта: зважте здобутки, ризики та ціну бездіяльності перед важливим рішенням.">
+  <meta name="keywords" content="Квадрат Декарта, прийняття рішень, калькулятор, раціональний вибір, матриця рішень">
+  <meta name="author" content="Раціональний вибір">
+  <meta property="og:title" content="Філософія Раціонального Вибору: Квадрат Декарта | Інтерактивний Аналіз">
+  <meta property="og:description" content="Розгляньте рішення з чотирьох точок зору та створіть власний зважений аналіз.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310131a'/%3E%3Cpath d='M32 10v44M10 32h44' stroke='%2379a7ff' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23d6b778'/%3E%3C/svg%3E">
+  <title>Філософія Раціонального Вибору: Квадрат Декарта | Інтерактивний Аналіз</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10131a;
+      --surface: #171b24;
+      --surface-2: #1d222d;
+      --text: #edf0f5;
+      --muted: #b0b8c6;
+      --line: #343b49;
+      --blue: #82aaff;
+      --green: #56d6a0;
+      --amber: #f2c66d;
+      --red: #ff8585;
+      --violet: #c1a0ff;
+      --serif: Georgia, "Times New Roman", Garamond, serif;
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --header-h: 4.5rem;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f1ea;
+      --surface: #fffdf8;
+      --surface-2: #f0ece3;
+      --text: #20242b;
+      --muted: #525b68;
+      --line: #d4cec1;
+      --blue: #244f94;
+      --green: #08784e;
+      --amber: #805400;
+      --red: #a92c2c;
+      --violet: #6038a1;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scrollbar-gutter: stable; scroll-padding-top: calc(var(--header-h) + 1rem); }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 100%/1.7 var(--sans); min-width: 320px; transition: background .5s, color .5s; }
+    body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .23; background-image: linear-gradient(rgba(125,150,190,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(125,150,190,.07) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, #000, transparent 90%); }
+    ::selection { background: var(--blue); color: #fff; }
+    a { color: var(--blue); text-decoration-thickness: .08em; text-underline-offset: .2em; }
+    button, input, textarea { font: inherit; }
+    button { touch-action: manipulation; }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    h1, h2, h3 { font-family: var(--serif); line-height: 1.18; letter-spacing: -.025em; }
+    h1 { font-size: clamp(2.8rem, 7vw, 6.25rem); margin: .35em 0; }
+    h2 { font-size: clamp(2rem, 4vw, 3.35rem); margin: 0 0 .55em; }
+    h3 { font-size: clamp(1.3rem, 2vw, 1.75rem); margin: 0 0 .5em; }
+    p { max-width: 74ch; }
+    .skip { position: fixed; z-index: 99; top: .5rem; left: .5rem; padding: .7rem 1rem; transform: translateY(-160%); background: var(--surface); border: 1px solid var(--line); }
+    .skip:focus { transform: none; }
+    #progress { position: fixed; inset: 0 auto auto 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--blue), var(--violet)); z-index: 100; }
+    #ambient { position: fixed; inset: 0; z-index: -2; width: 100%; height: 100%; pointer-events: none; opacity: .55; }
+    .site-header { position: sticky; z-index: 20; top: 0; backdrop-filter: blur(16px); background: color-mix(in srgb, var(--bg) 86%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+    .nav-wrap { max-width: 1200px; margin: auto; min-height: var(--header-h); display: flex; align-items: center; gap: 1.2rem; padding: .6rem clamp(1rem, 4vw, 2.5rem); }
+    nav { margin-left: auto; }
+    nav ul { display: flex; align-items: center; gap: clamp(.5rem, 1.5vw, 1.35rem); list-style: none; padding: 0; margin: 0; }
+    nav a { color: var(--muted); text-decoration: none; font-size: .88rem; white-space: nowrap; }
+    nav a:hover, nav a[aria-current="location"] { color: var(--text); }
+    .icon-button, .button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface); color: var(--text); padding: .65rem .95rem; cursor: pointer; transition: transform .2s, border-color .2s, background .2s; }
+    .icon-button { min-width: 44px; padding: .5rem; }
+    .button:hover, .icon-button:hover { border-color: var(--blue); transform: translateY(-2px); }
+    .button:active, .icon-button:active { transform: scale(.98); }
+    .button.primary { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 700; }
+    .button.quiet { background: transparent; }
+    .menu-toggle { display: none; }
+    main { overflow: clip; }
+    .container { width: min(1120px, calc(100% - 2rem)); margin-inline: auto; }
+    .section { padding: clamp(4rem, 9vw, 8rem) 0; scroll-margin-top: calc(var(--header-h) + 1rem); }
+    .eyebrow { color: var(--blue); font-size: .78rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .section-intro { color: var(--muted); font-size: 1.08rem; max-width: 68ch; }
+    .hero { min-height: min(790px, 90dvh); display: grid; align-items: center; padding-block: 5rem; }
+    .hero-inner { max-width: 890px; }
+    .hero h1 span { color: var(--blue); }
+    .hero .lead { font-size: clamp(1.12rem, 2vw, 1.35rem); color: var(--muted); max-width: 65ch; }
+    .quote { margin: 2rem 0; padding: .3rem 0 .3rem 1.3rem; border-left: 3px solid var(--blue); font: italic clamp(1.1rem, 2vw, 1.45rem)/1.6 var(--serif); }
+    .quote cite { display: block; color: var(--muted); font: .85rem var(--sans); margin-top: .5rem; }
+    .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .hero-note { color: var(--muted); font-size: .9rem; margin-top: 1.25rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: clamp(2rem, 6vw, 5rem); }
+    .panel, .quadrant, .step, .case-card, .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; box-shadow: 0 18px 50px rgba(0,0,0,.12); }
+    .panel { padding: clamp(1.25rem, 3vw, 2rem); }
+    .dropcap::first-letter { float: left; color: var(--blue); font: 4.1rem/.8 var(--serif); padding: .12em .12em 0 0; }
+    .matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .quadrant { position: relative; padding: 1.35rem; min-height: 230px; overflow: hidden; transition: transform .25s var(--ease), border-color .25s; }
+    .quadrant:hover { transform: translateY(-4px); }
+    .quadrant::after { position: absolute; right: .8rem; bottom: -.8rem; font: 5.5rem var(--serif); opacity: .07; pointer-events: none; }
+    .q1::after { content: "+"; color: var(--green); }.q2::after { content: "="; color: var(--amber); }.q3::after { content: "−"; color: var(--red); }.q4::after { content: "¬"; color: var(--violet); }
+    .q1 { border-top: 3px solid var(--green); }.q2 { border-top: 3px solid var(--amber); }.q3 { border-top: 3px solid var(--red); }.q4 { border-top: 3px solid var(--violet); }
+    .q-label { color: var(--muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+    .question { font-family: var(--serif); font-size: 1.28rem; line-height: 1.45; }
+    .axis-labels { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; margin-top: 1.2rem; color: var(--muted); font-size: .9rem; }
+    .axis-labels strong { color: var(--text); }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+    .step { padding: 1.4rem; }
+    .step-number { color: var(--blue); font: 2rem var(--serif); }
+    .step p, .quadrant p, .case-card p { color: var(--muted); margin-bottom: 0; }
+    .formula { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+    .formula code { display: block; background: var(--surface-2); border: 1px solid var(--line); border-radius: .6rem; padding: .9rem 1rem; color: var(--text); font: 500 .95rem/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .case-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+    .case-card { padding: 1.35rem; }
+    .case-card h3 { display: flex; align-items: center; gap: .6rem; }
+    .case-card ul { padding-left: 1.2rem; color: var(--muted); }
+    .case-card li { margin: .45rem 0; }
+    .score { color: var(--text); font: .9rem ui-monospace, monospace; white-space: nowrap; }
+    .case-result { margin-top: 1rem; padding: 1.2rem 1.4rem; border-left: 3px solid var(--green); background: var(--surface-2); border-radius: 0 .7rem .7rem 0; }
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .pros-cons article { padding: 1.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: .85rem; }
+    .calculator { background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line); border-radius: 1.2rem; padding: clamp(1rem, 3vw, 2rem); margin-top: 2rem; }
+    .dilemma-label { display: block; font-weight: 700; margin-bottom: .5rem; }
+    input[type="text"], textarea, input[type="number"] { width: 100%; min-width: 0; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: .55rem; padding: .75rem .85rem; }
+    textarea { resize: vertical; min-height: 2.8rem; line-height: 1.45; }
+    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 22%, transparent); outline: none; }
+    .argument-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.2rem; }
+    .argument-quadrant { min-width: 0; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: .8rem; padding: 1rem; background: var(--bg); }
+    .argument-quadrant h3 { font: 700 1rem/1.4 var(--sans); }
+    .argument-list { display: grid; gap: .65rem; }
+    .argument-row { display: grid; grid-template-columns: minmax(0, 1fr) 4.2rem 44px; gap: .45rem; align-items: center; }
+    .argument-row textarea { min-height: 44px; }
+    .argument-row input { min-height: 44px; text-align: center; padding-inline: .3rem; }
+    .remove-arg { min-width: 44px; min-height: 44px; border: 1px solid var(--line); color: var(--muted); border-radius: .5rem; background: var(--surface); cursor: pointer; }
+    .remove-arg:hover { color: var(--red); border-color: var(--red); }
+    .add-arg { margin-top: .7rem; font-size: .9rem; }
+    .q-total { margin-top: .7rem; color: var(--muted); font-size: .88rem; }
+    .q-total strong { color: var(--text); font: 1rem ui-monospace, monospace; }
+    .results { margin-top: 1.4rem; padding: 1.3rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface-2); }
+    .score-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .score-box { padding: 1rem; border-radius: .7rem; background: var(--surface); }
+    .score-box strong { display: block; font: 2rem var(--serif); }
+    .result-for strong { color: var(--green); }.result-against strong { color: var(--amber); }
+    .balance { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 1rem 0; }
+    .balance-fill { width: 50%; height: 100%; background: linear-gradient(90deg, var(--amber), var(--green)); transition: width .35s; }
+    .result-copy { font-size: 1.05rem; }
+    .fine-print { color: var(--muted); font-size: .86rem; }
+    .toolbar { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+    .saved { color: var(--muted); font-size: .82rem; margin-left: auto; align-self: center; }
+    .callout { margin-top: 1rem; padding: .9rem 1rem; border-left: 3px solid var(--violet); background: var(--surface-2); color: var(--muted); }
+    .faq-list { display: grid; gap: .7rem; margin-top: 2rem; }
+    .faq-item { padding: 1rem 1.2rem; }
+    .faq-item summary { cursor: pointer; font-weight: 700; }
+    .faq-item p { color: var(--muted); margin-bottom: .2rem; }
+    .closing { text-align: center; padding: 4rem 1rem; background: radial-gradient(ellipse at center, color-mix(in srgb, var(--blue) 12%, transparent), transparent 70%); }
+    .closing blockquote { max-width: 750px; margin: 1rem auto 2rem; font: italic clamp(1.4rem, 3vw, 2.3rem)/1.4 var(--serif); }
+    footer { border-top: 1px solid var(--line); padding: 2rem 1rem; color: var(--muted); text-align: center; font-size: .9rem; }
+    .back-top { position: fixed; z-index: 25; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); opacity: 0; pointer-events: none; transform: translateY(10px); transition: .25s; }
+    .back-top.visible { opacity: 1; pointer-events: auto; transform: none; }
+    .toast { position: fixed; z-index: 50; left: 50%; bottom: 1.5rem; transform: translate(-50%, 1rem); opacity: 0; pointer-events: none; background: var(--text); color: var(--bg); padding: .7rem 1rem; border-radius: .6rem; transition: .25s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity .65s, transform .65s; }
+    [data-reveal].revealed { opacity: 1; transform: none; }
+    @media (max-width: 900px) {
+      nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--line); padding: 1rem; }
+      nav.open { display: block; }
+      nav ul { align-items: stretch; flex-direction: column; gap: .25rem; }
+      nav a { display: block; padding: .75rem; }
+      .menu-toggle { display: inline-flex; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .nav-wrap { gap: .5rem; }
+    }
+    @media (max-width: 650px) {
+      .two-col, .case-grid, .pros-cons, .argument-grid { grid-template-columns: 1fr; }
+      .matrix { gap: .65rem; }
+      .quadrant { padding: 1rem; min-height: 0; }
+      .quadrant::after { font-size: 4rem; }
+      .steps { grid-template-columns: 1fr 1fr; gap: .65rem; }
+      .step { padding: 1rem; }
+      .score-columns { gap: .6rem; }
+      .score-box { padding: .75rem; }
+      .saved { width: 100%; margin: 0; }
+      .hero { min-height: auto; padding-block: 5rem; }
+    }
+    @media (max-width: 380px) { .matrix { grid-template-columns: 1fr; } .argument-row { grid-template-columns: minmax(0, 1fr) 3.4rem 44px; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      #ambient { display: none; }
+    }
+    @media print {
+      :root { color-scheme: light; --bg: #fff; --surface: #fff; --surface-2: #f3f3f3; --text: #111; --muted: #333; --line: #bbb; }
+      body { background: #fff; color: #111; font-size: 11pt; }
+      #ambient, #progress, .site-header, .actions, .toolbar, .add-arg, .remove-arg, .back-top, footer, .toast { display: none !important; }
+      .section { padding: 1.5rem 0; }
+      .panel, .quadrant, .case-card, .step, .calculator { box-shadow: none; break-inside: avoid; }
+      [data-reveal] { opacity: 1; transform: none; }
+      a { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Перейти до змісту</a>
+  <div id="progress" aria-hidden="true"></div>
+  <canvas id="ambient" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <nav id="site-nav" aria-label="Основна навігація">
+        <ul>
+          <li><a href="#concept">Концепція</a></li><li><a href="#matrix">Матриця</a></li><li><a href="#method">Алгоритм</a></li><li><a href="#example">Приклад</a></li><li><a href="#calculator">Калькулятор</a></li><li><a href="#limits">Оцінка</a></li>
+        </ul>
+      </nav>
+      <button class="icon-button" id="theme-toggle" type="button" aria-label="Увімкнути світлу тему" title="Змінити тему">☼</button>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Відкрити меню" aria-expanded="false" aria-controls="site-nav">☰</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" id="top">
+      <div class="hero-inner">
+        <h1>Побачте рішення <span>цілком.</span></h1>
+        <p class="lead">Квадрат Декарта допомагає розкласти бінарну дилему на чотири запитання — і помітити не лише здобутки змін, а й ціну бездіяльності.</p>
+        <blockquote class="quote">«Cogito, ergo sum» <cite>— Рене Декарт · «Мислю, отже, існую»</cite></blockquote>
+      </div>
+    </section>
+
+    <section class="section" id="concept">
+      <div class="container two-col" data-reveal>
+        <div><div class="eyebrow">01 · Ідея</div><h2>Розширити поле зору</h2>
+          <p class="dropcap">Коли ми вагаємося, увага часто зосереджується лише на одному питанні: «Що я отримаю, якщо це зроблю?». Такий фокус залишає поза увагою вигоди збереження теперішнього стану, втрати від змін і — особливо — те, чого ми не отримаємо, якщо нічого не змінювати.</p>
+          <p>Квадрат Декарта — проста письмова рамка для бінарних рішень. Вона не вгадує майбутнє й не ухвалює рішення за вас: її цінність у тому, що вона робить припущення видимими.</p>
+        </div>
+        <aside class="panel"><div class="eyebrow">Принцип</div><h3>Не тільки «що буде?»</h3><p>Додайте до прямого прогнозу два заперечні ракурси: чого не буде за кожного варіанта. Саме вони часто виявляють приховану ціну вибору.</p><div class="callout">Записуйте конкретні наслідки, а не загальні оцінки на кшталт «буде краще».</div></aside>
+      </div>
+    </section>
+
+    <section class="section" id="matrix">
+      <div class="container" data-reveal>
+        <div class="eyebrow">02 · Чотири квадранти</div><h2>Матриця одного рішення</h2>
+        <p class="section-intro">Оберіть конкретну дію. Далі послідовно пройдіть усі чотири комбінації дії та її відсутності.</p>
+        <div class="axis-labels"><span><strong>Дія:</strong> відбувається / не відбувається</span><span><strong>Наслідки:</strong> здобутки / втрати</span></div>
+        <div class="matrix">
+          <article class="quadrant q1"><div class="q-label">Q1 · Дія так · Здобутки</div><h3>Прямі здобутки</h3><p class="question">Що станеться, якщо я це зроблю?</p><p>Вигоди, можливості й бажані зміни, які принесе крок.</p></article>
+          <article class="quadrant q2"><div class="q-label">Q2 · Дія ні · Здобутки</div><h3>Плюси статус-кво</h3><p class="question">Що залишиться, якщо я цього не зроблю?</p><p>Стабільність, збережені ресурси та інші переваги бездіяльності.</p></article>
+          <article class="quadrant q3"><div class="q-label">Q3 · Дія так · Втрати</div><h3>Ціна змін</h3><p class="question">Чого я позбудуся, якщо це зроблю?</p><p>Комфорт, звички, гарантії чи альтернативи, якими доведеться поступитися.</p></article>
+          <article class="quadrant q4"><div class="q-label">Q4 · Дія ні · Втрати</div><h3>Ціна бездіяльності</h3><p class="question">Чого не буде, якщо я цього не зроблю?</p><p>Можливості й проблеми, що залишаться невирішеними. Запитайте себе: «Від чого я відмовляюся, обираючи бездіяльність?»</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="method">
+      <div class="container" data-reveal>
+        <div class="eyebrow">03 · Практика</div><h2>Чотири кроки до ясності</h2>
+        <div class="steps">
+          <article class="step"><div class="step-number">01</div><h3>Сформулюйте дію</h3><p>Замість «Що робити?» — конкретне «Чи змінювати напрям роботи цього року?»</p></article>
+          <article class="step"><div class="step-number">02</div><h3>Запишіть думки</h3><p>Письмо зупиняє коло повторів і допомагає не пропустити четвертий квадрант.</p></article>
+          <article class="step"><div class="step-number">03</div><h3>Зважте аргументи</h3><p>Оцініть значущість кожного пункту за шкалою від 1 до 10 — для вас, а не «об'єктивно».</p></article>
+          <article class="step"><div class="step-number">04</div><h3>Порівняйте суми</h3><p>Порахуйте аргументи за зміни й проти. Різниця — орієнтир для роздумів, не вирок.</p></article>
+        </div>
+        <div class="formula"><code>ЗА зміни = Q1 (+/+) + Q4 (−/−)</code><code>ПРОТИ змін = Q2 (+/−) + Q3 (−/+)</code></div>
+      </div>
+    </section>
+
+    <section class="section" id="example">
+      <div class="container" data-reveal>
+        <div class="eyebrow">04 · Приклад</div><h2>Найм чи фриланс?</h2>
+        <p class="section-intro">Умовний приклад демонструє, як оцінки допомагають структурувати роздуми. Ваші бали можуть бути зовсім іншими.</p>
+        <div class="case-grid">
+          <article class="case-card" style="--accent:var(--green)"><h3><span aria-hidden="true">＋</span> Q1 · Що буде, якщо перейти?</h3><ul><li>Гнучкий графік та автономія <span class="score">8</span></li><li>Потенційне зростання доходу <span class="score">9</span></li><li>Самостійний вибір проєктів <span class="score">7</span></li></ul></article>
+          <article class="case-card" style="--accent:var(--amber)"><h3><span aria-hidden="true">＝</span> Q2 · Що збережеться, якщо ні?</h3><ul><li>Стабільна щомісячна зарплата <span class="score">9</span></li><li>Відпустка та лікарняні <span class="score">6</span></li><li>Готова робоча інфраструктура <span class="score">5</span></li></ul></article>
+          <article class="case-card" style="--accent:var(--red)"><h3><span aria-hidden="true">−</span> Q3 · Чого не буде, якщо перейти?</h3><ul><li>Гарантованої стабільності доходу на старті <span class="score">8</span></li><li>Чіткої межі роботи й особистого часу <span class="score">6</span></li><li>Щоденного спілкування з офісною командою <span class="score">4</span></li></ul></article>
+          <article class="case-card" style="--accent:var(--violet)"><h3><span aria-hidden="true">¬</span> Q4 · Чого не буде, якщо не перейти?</h3><ul><li>Можливості безпосередньо впливати на дохід <span class="score">8</span></li><li>Звільнення від частини рутинних завдань <span class="score">7</span></li><li>Свободи пересування й релокації <span class="score">8</span></li></ul></article>
+        </div>
+        <div class="case-result"><strong>Умовний підсумок:</strong> за зміни — (8+9+7)+(8+7+8) = <strong>47</strong>; проти — (9+6+5)+(8+6+4) = <strong>38</strong>. Різниця — 9 балів на користь змін. Водночас найбільший практичний ризик — фінансова подушка на перші місяці.</div>
+      </div>
+    </section>
+
+    <section class="section" id="calculator">
+      <div class="container" data-reveal>
+        <div class="eyebrow">05 · Ваш аналіз</div><h2>Інтерактивний калькулятор</h2>
+        <p class="section-intro">Додайте аргументи у відповідні квадранти й оцініть їхню вагомість від 1 до 10. Дані автоматично зберігаються у цьому браузері.</p>
+        <div class="calculator">
+          <label class="dilemma-label" for="dilemma">Моя дилема</label>
+          <input id="dilemma" type="text" maxlength="180" autocomplete="off" placeholder="Наприклад: Чи варто мені перейти на фриланс?">
+          <div class="argument-grid" id="argument-grid"></div>
+          <div class="callout"><strong>Чому важливий Q4?</strong> Він показує не лише ризик змін, а й те, що ви можете втратити, залишаючи все як є.</div>
+          <div class="results" aria-live="polite" aria-atomic="true">
+            <div class="score-columns">
+              <div class="score-box result-for">ЗА зміни <strong id="for-total">0</strong><span class="fine-print">Q1 + Q4</span></div>
+              <div class="score-box result-against">ПРОТИ змін <strong id="against-total">0</strong><span class="fine-print">Q2 + Q3</span></div>
+            </div>
+            <div class="balance" role="img" aria-label="Баланс оцінок"><div class="balance-fill" id="balance-fill"></div></div>
+            <p class="result-copy" id="result-copy">Додайте аргументи, щоб побачити попередній підсумок.</p>
+            <p class="fine-print" id="risk-copy">Це інструмент для роздумів, а не автоматична рекомендація.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="container" data-reveal>
+        <div class="eyebrow">06 · Межі методу</div><h2>Опора, а не оракул</h2>
+        <p class="section-intro">Матриця допомагає мислити системніше, але не перетворює суб'єктивні оцінки на точний прогноз.</p>
+        <div class="pros-cons">
+          <article><h3>Що дає</h3><ul><li>Допомагає помітити неочевидні наслідки й назвати страхи.</li><li>Створює паузу між імпульсом і рішенням.</li><li>Окреслює ризики, до яких можна підготуватися.</li></ul></article>
+          <article><h3>Чого не гарантує</h3><ul><li>Підходить передусім для вибору «так / ні»; для кількох варіантів потрібні інші інструменти.</li><li>Бали залежать від контексту й поточного стану.</li><li>Однакова сума не означає однакових наслідків чи ймовірностей.</li></ul></article>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item"><summary>Чи означає більша сума, що саме цей варіант треба обрати?</summary><p>Ні. Це лише спосіб побачити, куди схиляються ваші оцінки. Перевірте припущення, зважте оборотність рішення, строки й реальні обмеження.</p></details>
+          <details class="faq-item"><summary>Як оцінювати вагомість аргументів?</summary><p>Орієнтуйтеся на особисту важливість: 1 — майже не впливає, 10 — критично важливо. За потреби додайте окремо ймовірність наслідку.</p></details>
+          <details class="faq-item"><summary>Що робити, якщо суми близькі?</summary><p>Зберіть додаткові дані, перевірте найважливіші припущення або розгляньте малий експеримент замість незворотного кроку.</p></details>
+        </div>
+      </div>
+    </section>
+    <section class="closing container"><div class="eyebrow">Поверніться до власних цінностей</div><blockquote>«Ясність не завжди прибирає невизначеність. Вона допомагає побачити, що саме ми обираємо».</blockquote></section>
+  </main>
+  <button class="icon-button back-top" id="back-top" type="button" aria-label="Повернутися на початок" title="До витоків думки">↑</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+      const quadrants = [
+        { id: 'q1', name: 'Q1 · Що станеться, якщо зробити?', color: 'var(--green)' },
+        { id: 'q2', name: 'Q2 · Що збережеться, якщо не робити?', color: 'var(--amber)' },
+        { id: 'q3', name: 'Q3 · Чого не буде, якщо зробити?', color: 'var(--red)' },
+        { id: 'q4', name: 'Q4 · Чого не буде, якщо не робити?', color: 'var(--violet)' }
+      ];
+      const storageKey = 'cartesian-square-analysis-v1';
+      const grid = document.getElementById('argument-grid');
+      const dilemma = document.getElementById('dilemma');
+      const toast = document.getElementById('toast');
+      let toastTimer;
+      let data = { dilemma: '', arguments: { q1: [], q2: [], q3: [], q4: [] } };
+      const safeStorage = {
+        get() { try { return localStorage.getItem(storageKey); } catch { return null; } },
+        set(value) { try { localStorage.setItem(storageKey, value); return true; } catch { return false; } },
+        remove() { try { localStorage.removeItem(storageKey); } catch {} }
+      };
+      const notify = (message) => {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+      };
+      const makeArgument = (text = '', score = 5) => ({ text, score });
+      const render = () => {
+        grid.replaceChildren();
+        quadrants.forEach((q) => {
+          const section = document.createElement('section');
+          section.className = 'argument-quadrant';
+          section.style.setProperty('--accent', q.color);
+          section.dataset.quadrant = q.id;
+          const heading = document.createElement('h3'); heading.textContent = q.name;
+          const list = document.createElement('div'); list.className = 'argument-list'; list.dataset.list = q.id;
+          section.append(heading, list);
+          (data.arguments[q.id] || []).forEach((item, index) => {
+            const row = document.createElement('div'); row.className = 'argument-row'; row.dataset.index = String(index);
+            const text = document.createElement('textarea'); text.maxLength = 300; text.rows = 1; text.value = item.text; text.placeholder = 'Запишіть конкретний аргумент'; text.setAttribute('aria-label', `${q.id.toUpperCase()}: аргумент`);
+            const score = document.createElement('input'); score.type = 'number'; score.min = '1'; score.max = '10'; score.step = '1'; score.value = String(item.score); score.setAttribute('aria-label', 'Важливість від 1 до 10');
+            const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'remove-arg'; remove.dataset.action = 'remove'; remove.textContent = '×'; remove.setAttribute('aria-label', 'Видалити аргумент');
+            row.append(text, score, remove); list.append(row);
+          });
+          const add = document.createElement('button'); add.type = 'button'; add.className = 'button quiet add-arg'; add.dataset.action = 'add'; add.textContent = '+ Додати аргумент';
+          const total = document.createElement('div'); total.className = 'q-total'; total.innerHTML = `Сума: <strong>${sum(q.id)}</strong> · Аргументів: ${(data.arguments[q.id] || []).length}`;
+          section.append(add, total); grid.append(section);
+        });
+        updateResults();
+      };
+      const scoreValue = (value) => Math.max(1, Math.min(10, Math.round(Number(value) || 1)));
+      const sum = (id) => (data.arguments[id] || []).reduce((total, item) => total + scoreValue(item.score), 0);
+      const updateResults = () => {
+        const forTotal = sum('q1') + sum('q4');
+        const againstTotal = sum('q2') + sum('q3');
+        document.getElementById('for-total').textContent = String(forTotal);
+        document.getElementById('against-total').textContent = String(againstTotal);
+        const all = forTotal + againstTotal;
+        document.getElementById('balance-fill').style.width = `${all ? Math.round(forTotal / all * 100) : 50}%`;
+        const copy = document.getElementById('result-copy');
+        if (!all) copy.textContent = 'Додайте аргументи, щоб побачити попередній підсумок.';
+        else if (forTotal > againstTotal) copy.textContent = `У ваших оцінках переважають аргументи за зміни на ${forTotal - againstTotal} балів. Перевірте ключові ризики й умови безпечного кроку.`;
+        else if (againstTotal > forTotal) copy.textContent = `У ваших оцінках переважають аргументи проти змін на ${againstTotal - forTotal} балів. Переконайтеся, що ціна бездіяльності також врахована.`;
+        else copy.textContent = 'Оцінки збалансовані. Можливо, потрібні додаткові дані або інший спосіб порівняння.';
+        const q3 = sum('q3'), q4 = sum('q4');
+        document.getElementById('risk-copy').textContent = `Ціна змін (Q3): ${q3} балів · приховані втрати бездіяльності (Q4): ${q4} балів. Підсумок не враховує ймовірність наслідків.`;
+      };
+      const persist = () => {
+        data.dilemma = dilemma.value.trim();
+        safeStorage.set(JSON.stringify(data));
+      };
+      const report = () => {
+        const lines = [`Квадрат Декарта${data.dilemma ? ` — ${data.dilemma}` : ''}`, ''];
+        quadrants.forEach((q) => {
+          lines.push(q.name);
+          (data.arguments[q.id] || []).forEach((item) => lines.push(`• ${item.text.trim() || '(аргумент не заповнено)'} — ${scoreValue(item.score)}/10`));
+          lines.push(`Сума: ${sum(q.id)}`, '');
+        });
+        lines.push(`ЗА зміни: ${sum('q1') + sum('q4')}`, `ПРОТИ змін: ${sum('q2') + sum('q3')}`, '', 'Оцінки — інструмент роздумів, не автоматична рекомендація.');
+        return lines.join('\n');
+      };
+      const loadDemo = () => {
+        data = { dilemma: 'Чи варто перейти з найму на фриланс?', arguments: {
+          q1: [makeArgument('Гнучкий графік та автономія', 8), makeArgument('Потенційне зростання доходу', 9), makeArgument('Самостійний вибір проєктів', 7)],
+          q2: [makeArgument('Стабільна щомісячна зарплата', 9), makeArgument('Оплачувана відпустка та лікарняні', 6), makeArgument('Готова робоча інфраструктура', 5)],
+          q3: [makeArgument('Менша стабільність доходу на старті', 8), makeArgument('Слабша межа роботи й особистого часу', 6), makeArgument('Менше спілкування з командою', 4)],
+          q4: [makeArgument('Не зможу безпосередньо впливати на дохід', 8), makeArgument('Не позбудуся частини рутинних завдань', 7), makeArgument('Не матиму свободи пересування та релокації', 8)]
+        } };
+        dilemma.value = data.dilemma; render(); persist(); notify('Приклад завантажено');
+      };
+      const loadSaved = () => {
+        const saved = safeStorage.get();
+        if (!saved) return;
+        try {
+          const parsed = JSON.parse(saved);
+          if (!parsed || typeof parsed !== 'object' || !parsed.arguments) return;
+          data.dilemma = typeof parsed.dilemma === 'string' ? parsed.dilemma : '';
+          quadrants.forEach(({ id }) => { data.arguments[id] = Array.isArray(parsed.arguments[id]) ? parsed.arguments[id].filter(x => x && typeof x === 'object').map(x => makeArgument(String(x.text || '').slice(0, 300), scoreValue(x.score))) : []; });
+          dilemma.value = data.dilemma;
+        } catch { safeStorage.remove(); }
+      };
+      grid.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-action]'); if (!button) return;
+        const section = button.closest('[data-quadrant]'); const id = section.dataset.quadrant;
+        if (button.dataset.action === 'add') { data.arguments[id].push(makeArgument()); render(); grid.querySelector(`[data-list="${id}"] .argument-row:last-child textarea`)?.focus(); persist(); }
+        if (button.dataset.action === 'remove') { const index = Number(button.closest('.argument-row').dataset.index); data.arguments[id].splice(index, 1); render(); persist(); }
+      });
+      grid.addEventListener('input', (event) => {
+        const row = event.target.closest('.argument-row'); if (!row) return;
+        const list = row.closest('[data-list]'); const id = list.dataset.list; const index = Number(row.dataset.index);
+        if (event.target.matches('textarea')) data.arguments[id][index].text = event.target.value;
+        if (event.target.matches('input[type="number"]')) { const value = scoreValue(event.target.value); data.arguments[id][index].score = value; if (event.target.value !== String(value)) event.target.value = String(value); }
+        const total = row.closest('.argument-quadrant').querySelector('.q-total'); total.innerHTML = `Сума: <strong>${sum(id)}</strong> · Аргументів: ${data.arguments[id].length}`;
+        updateResults(); persist();
+      });
+      dilemma.addEventListener('input', persist);
+
+      const themeToggle = document.getElementById('theme-toggle');
+      const applyTheme = (theme) => { document.documentElement.dataset.theme = theme; themeToggle.textContent = theme === 'light' ? '☾' : '☼'; themeToggle.setAttribute('aria-label', theme === 'light' ? 'Увімкнути темну тему' : 'Увімкнути світлу тему'); try { localStorage.setItem('cartesian-theme', theme); } catch {} };
+      try { const savedTheme = localStorage.getItem('cartesian-theme'); if (savedTheme === 'light' || savedTheme === 'dark') applyTheme(savedTheme); } catch {}
+      themeToggle.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
+      const menuToggle = document.getElementById('menu-toggle'); const nav = document.getElementById('site-nav');
+      menuToggle.addEventListener('click', () => { const open = nav.classList.toggle('open'); menuToggle.setAttribute('aria-expanded', String(open)); menuToggle.setAttribute('aria-label', open ? 'Закрити меню' : 'Відкрити меню'); menuToggle.textContent = open ? '×' : '☰'; });
+      nav.addEventListener('click', (event) => { if (event.target.closest('a')) { nav.classList.remove('open'); menuToggle.setAttribute('aria-expanded', 'false'); menuToggle.setAttribute('aria-label', 'Відкрити меню'); menuToggle.textContent = '☰'; } });
+      const backTop = document.getElementById('back-top');
+      document.getElementById('back-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      let scrollQueued = false;
+      window.addEventListener('scroll', () => {
+        if (scrollQueued) return; scrollQueued = true;
+        requestAnimationFrame(() => { const max = document.documentElement.scrollHeight - innerHeight; document.getElementById('progress').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; backTop.classList.toggle('visible', scrollY > 500); scrollQueued = false; });
+      }, { passive: true });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && nav.classList.contains('open')) { nav.classList.remove('open'); menuToggle.setAttribute('aria-expanded', 'false'); menuToggle.focus(); } if (event.key === 'Home' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      const revealObserver = new IntersectionObserver((entries, observer) => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } }), { threshold: .08 });
+      document.querySelectorAll('[data-reveal]').forEach(element => revealObserver.observe(element));
+      const sectionObserver = new IntersectionObserver((entries) => entries.forEach(entry => { if (entry.isIntersecting) { nav.querySelectorAll('a').forEach(link => { if (link.getAttribute('href') === `#${entry.target.id}`) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); }); } }), { rootMargin: '-25% 0px -65% 0px' });
+      document.querySelectorAll('main section[id]').forEach(section => sectionObserver.observe(section));
+      const canvas = document.getElementById('ambient');
+      if (canvas && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const ctx = canvas.getContext('2d'); let width = 0, height = 0, frame = 0; let points = [];
+        const resize = () => { const dpr = Math.min(devicePixelRatio || 1, 1.5); width = innerWidth; height = innerHeight; canvas.width = width * dpr; canvas.height = height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); const count = Math.min(42, Math.max(18, Math.floor(width / 28))); points = Array.from({ length: count }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22 })); };
+        const draw = () => { frame = requestAnimationFrame(draw); if (document.hidden) return; ctx.clearRect(0, 0, width, height); const color = getComputedStyle(document.documentElement).getPropertyValue('--blue').trim();
+          points.forEach((p, i) => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > width) p.vx *= -1; if (p.y < 0 || p.y > height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2); ctx.fillStyle = color; ctx.globalAlpha = .35; ctx.fill();
+            for (let j = i + 1; j < points.length; j++) { const q = points[j], dx = p.x - q.x, dy = p.y - q.y, distance = Math.hypot(dx, dy); if (distance < 115) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.strokeStyle = color; ctx.globalAlpha = (1 - distance / 115) * .11; ctx.stroke(); } }
+          }); ctx.globalAlpha = 1;
+        };
+        window.addEventListener('resize', resize, { passive: true }); resize(); draw();
+        document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(frame); else draw(); });
+      }
+      loadSaved(); render();
+    })();
+  </script>
+</body>
+</html>
